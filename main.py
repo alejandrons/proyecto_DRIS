@@ -20,6 +20,7 @@ Nota:Si para un registro no conoce el valor de una o mas variables, ingreselo(s)
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
+STATIC_DIR.mkdir(parents=True, exist_ok=True)
 
 # Montar la carpeta estática para servir imágenes
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
