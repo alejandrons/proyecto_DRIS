@@ -18,9 +18,22 @@ def DRIS(muestra:str, perfVar:str="Pr", dec:str=".", separador:str=";", subregio
     IMAGE_DIR = BASE_DIR / "static/images"
     IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
+    # Escogencia de la base de datos
+    if (subregion == "suroeste"):
+        bd_path = "foliar.csv"
+    else:
+        bd_path = "Foliar_Pr_U.csv"
+
     # Lectura de las base de datos
-    bd = pd.read_csv("foliar.csv", sep=separador)
-    mtra =  pd.read_csv(muestra, sep=separador)
+    bd = pd.read_csv(bd_path, sep=separador,decimal=dec)
+    mtra =  pd.read_csv(muestra, sep=separador,decimal=dec)
+
+    for i in bd.columns:
+        if bd.dtypes[i] == "object":
+            bd[i] = pd.to_numeric(bd[i], errors='coerce')
+    for i in mtra.columns:
+        if mtra.dtypes[i] == "object":
+            mtra[i] = pd.to_numeric(mtra[i], errors='coerce')
 
     p = perc #Percentil
     y = perfVar    
@@ -32,7 +45,7 @@ def DRIS(muestra:str, perfVar:str="Pr", dec:str=".", separador:str=";", subregio
     # Combinar las bases de datos
     bd_t = pd.concat([bd, mtra], ignore_index=True) #Ignore (Sirve para ignorar los indices de los dataframes) une un dataframe con el otro
     m_bd_t = pd.DataFrame(bd_t)
-
+    
     # Selección de nutrientes móviles
     m = m_bd_t[["N", "P", "K", "Mg", "S"]] #to_numpy hace la matrixxxxx **se elimino numpy
 
@@ -100,7 +113,7 @@ def DRIS(muestra:str, perfVar:str="Pr", dec:str=".", separador:str=";", subregio
     #AQUI VA EL PRIMER IF SOBRE LAS RELACIONES A ESCOGER
     # Estadisticos para DRIS con todas relaciones
     # Caracteristicas promedio y sd en poblacion de refencia
-    prom_nut_a = p_a.iloc[:, :len(bd.columns)].mean()  # Promedio
+    prom_nut_a = p_a.iloc[:, 1:len(bd.columns)].mean()  # Promedio
     sd_nut_a = p_a.iloc[:, 1:len(bd.columns)].std()    # Desviación estándar
     prom_a = r_a.mean()
     cv_a = r_a.std() / abs(prom_a)
@@ -155,8 +168,8 @@ def DRIS(muestra:str, perfVar:str="Pr", dec:str=".", separador:str=";", subregio
     img_dir = []
     #GRAFICOS
     import matplotlib.pyplot as plt
-    for i in range(4, ID.shape[0]):  # Empieza desde el quinto elemento
-        sample_name = ID.index[i]
+    for i in range(p_a.shape[0], p_a_mtra.shape[0]):  # Empieza desde el quinto elemento
+        sample_name = mtra["Id"][i-p_a.shape[0]]
         file_name = f"{sample_name}.png"
 
         # Crear figura
@@ -167,7 +180,7 @@ def DRIS(muestra:str, perfVar:str="Pr", dec:str=".", separador:str=";", subregio
         ax = axes[0]
         y_macro_prom = ID.loc["Prom.nutrientes", macro]
         y_macro_sd = ID.loc["Sd.nutrientes", macro]
-        y_macro_sample = mtra.loc[i-4, macro]
+        y_macro_sample = mtra.loc[i-p_a.shape[0], macro]
         x_macro = np.arange(1, len(macro) + 1)
 
         ax.errorbar(x_macro, y_macro_prom, yerr=y_macro_sd, fmt='o', color='green', label="Norma", capsize=5)
@@ -184,7 +197,7 @@ def DRIS(muestra:str, perfVar:str="Pr", dec:str=".", separador:str=";", subregio
         ax = axes[1]
         y_micro_prom = ID.loc["Prom.nutrientes", micro]
         y_micro_sd = ID.loc["Sd.nutrientes", micro]
-        y_micro_sample = mtra.loc[i-4, micro]
+        y_micro_sample = mtra.loc[i-p_a.shape[0], micro]
         x_micro = np.arange(1, len(micro) + 1)
 
         ax.errorbar(x_micro, y_micro_prom, yerr=y_micro_sd, fmt='o', color='green', label="Norma", capsize=5)

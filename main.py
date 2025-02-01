@@ -6,17 +6,16 @@ from pathlib import Path
 
 app = FastAPI()
 
-app.title= "Sistema DRIS"
+app.title= "DRIS: Sistema integral de diagnostico y recomendacion nutricional"
 app.version = "1.0.0"
 
-app.tag = "Realizado_por: Sofia Castillo, Dayana Villa y Dario Castañeda"
-app.description = """La evaluacion del estado nutricional de una muestra requiere
-preparar un archivo csv o txt. Debe contener las siguientes columnas
-(Id,	Pr,	N,	P,	K,	Ca, Mg,	S,	Fe,	Mn,	Cu,	Zn,	B). Cada fila corresponde
+app.description = """La evaluacion del estado nutricional de una muestra requiere 
+preparar un archivo csv o txt. Debe contener las siguientes columnas 
+(Id, Pr,	N,	P,	K,	Ca, Mg,	S,	Fe,	Mn,	Cu,	Zn,	B). Cada fila corresponde 
 con los registros de cada variable asi: Id:numero de la muestra, 
-Pr:Peso de racimo o rendimiento (kg), y las demas a los nutrientes reportados en
-los resultados de los analisis foliares para N,P,K,Ca,Mg y S en %, los demas en mg/kg.
-Nota:Si para un registro no conoce el valor de una o mas variables, ingreselo(s) como NA"""
+Pr:Peso de racimo o rendimiento (kg), y las demas a los nutrientes reportados en 
+los resultados de los analisis foliares para N,P,K,Ca,Mg y S en %, los demas en mg/kg.\n\n
+*Nota: Si para un registro no conoce el valor de una o mas variables, ingreselo(s) como NA."""
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
@@ -25,8 +24,12 @@ STATIC_DIR.mkdir(parents=True, exist_ok=True)
 # Montar la carpeta estática para servir imágenes
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
-@app.get('/home', tags=['Plátano'])
+@app.get('/', tags=['Realizadopor: Dayana Villa y Dario Castañeda'])
+def root():
+    pass
 
+
+@app.get('/home', tags=['Plátano'])
 def principal(mtra:str, y:str="Pr", dec:str=".", sep:str=";", subregion:str="suroeste", p:float=0.9):
     # mtra: Ingrese muestra (archivo .csv o .txt)
     # dec: Caracter separador fraccion decimal valores muestra: ("." "," )
