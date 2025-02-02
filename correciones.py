@@ -21,8 +21,12 @@ def DRIS(muestra:str, perfVar:str="Pr", dec:str=".", separador:str=";", subregio
     # Escogencia de la base de datos
     if (subregion == "suroeste"):
         bd_path = "foliar.csv"
-    else:
+
+    elif (subregion == "uraba"):
         bd_path = "Foliar_Pr_U.csv"
+        
+    else:
+        return []
 
     # Lectura de las base de datos
     bd = pd.read_csv(bd_path, sep=separador,decimal=dec)
@@ -38,8 +42,6 @@ def DRIS(muestra:str, perfVar:str="Pr", dec:str=".", separador:str=";", subregio
     p = perc #Percentil
     y = perfVar    
 
-    #TODO_VALIDAR SI HAY NULOS EN LA COLUMNA ID
-    #TODO_VALIDAR LA SUBREGION ES SUROESTE  
     #TODO_VALIDAR LA OPCION TODOS O LA MITAD DE LAS RELACIONES
 
     # Combinar las bases de datos
@@ -148,7 +150,6 @@ def DRIS(muestra:str, perfVar:str="Pr", dec:str=".", separador:str=";", subregio
 
     for i in range(ID_a_mtra.shape[0]): #recorre la matriz (fila por fila)  mejor for si es finito
         for j in range(ID_a_mtra.shape[1]): #(columna por columna)
-            #TODO Corregir: Setting an item of incompatible dtype is deprecated and will raise an error in a future version of pandas.
             
             matching_cols = [col for col in f_a_mtra.columns if ta1[j] in col.split(":")[0]] #igual que el grep
             matching_cols.pop(0) #pop borra el primer elemento que no sirve
@@ -164,12 +165,11 @@ def DRIS(muestra:str, perfVar:str="Pr", dec:str=".", separador:str=";", subregio
     for i in mtra["Id"]:
         index_list += ["id_muestra_"+str(i)]
     ID.index = index_list
-
-    img_dir = []
+    
     #GRAFICOS
-    import matplotlib.pyplot as plt
+    img_dir = []
     for i in range(p_a.shape[0], p_a_mtra.shape[0]):  # Empieza desde el quinto elemento
-        sample_name = mtra["Id"][i-p_a.shape[0]]
+        sample_name = "id_muestra_" + str(mtra["Id"][i-p_a.shape[0]])
         file_name = f"{sample_name}.png"
 
         # Crear figura

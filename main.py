@@ -11,7 +11,7 @@ app.version = "1.0.0"
 
 app.description = """La evaluacion del estado nutricional de una muestra requiere 
 preparar un archivo csv o txt. Debe contener las siguientes columnas 
-(Id, Pr,	N,	P,	K,	Ca, Mg,	S,	Fe,	Mn,	Cu,	Zn,	B). Cada fila corresponde 
+(Id, Pr, N,	P, K, Ca, Mg, S, Fe, Mn, Cu, Zn, B). Cada fila corresponde 
 con los registros de cada variable asi: Id:numero de la muestra, 
 Pr:Peso de racimo o rendimiento (kg), y las demas a los nutrientes reportados en 
 los resultados de los analisis foliares para N,P,K,Ca,Mg y S en %, los demas en mg/kg.\n\n
@@ -24,7 +24,7 @@ STATIC_DIR.mkdir(parents=True, exist_ok=True)
 # Montar la carpeta estática para servir imágenes
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
-@app.get('/', tags=['Realizadopor: Dayana Villa y Dario Castañeda'])
+@app.get('/', tags=['Realizado por: Dayana Villa y Dario Castañeda'])
 def root():
     pass
 
